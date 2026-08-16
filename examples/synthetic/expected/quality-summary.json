@@ -1,0 +1,29 @@
+{
+  "fixture_id": "synthetic-generic-records-mini",
+  "synthetic": true,
+  "rows_by_engine": {
+    "ocr-alpha": 5,
+    "ocr-beta": 4
+  },
+  "aligned_records": 5,
+  "unanimous_records": 2,
+  "resolved_repeat_records": 1,
+  "conflict_cells": 1,
+  "missing_source_rows": 1,
+  "repeat_marker_cells": 6,
+  "manual_decisions": 3,
+  "price_observations": 5,
+  "currencies": [
+    "CRD",
+    "EUR",
+    "TOK",
+    "USD"
+  ],
+  "date_precision_counts": {
+    "month": 3,
+    "range_year": 1,
+    "year": 1
+  },
+  "provenance_completeness": 1.0,
+  "all_expected_records_have_raw_and_std": true
+}

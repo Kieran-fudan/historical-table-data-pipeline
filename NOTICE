@@ -1,0 +1,22 @@
+Historical Table Data Pipeline
+Copyright 2026 Kieran-fudan
+
+This product is licensed under the Apache License, Version 2.0.
+
+The license covers this repository's software and original documentation. It
+does not grant rights to source publications, scanned pages, OCR transcriptions,
+or datasets supplied or produced by users. Those materials remain subject to
+their own rights, licenses, and access conditions.
+
+Third-party packages retain their respective licenses. Review the dependency
+metadata and bundled third-party notices before redistribution.
+
+The optional PDF renderer uses pypdfium2/PDFium instead of making PyMuPDF's
+AGPL/commercial licensing a project dependency. This choice does not relicense
+pypdfium2, PDFium, or libraries bundled with a PDFium build under this
+project's Apache-2.0 license. pypdfium2, PDFium, and their bundled dependencies
+remain governed by their own build-specific terms. When redistributing wheels,
+containers, executables, or images containing them, retain the license and
+third-party notice files shipped with the exact pypdfium2/PDFium build. See the official
+pypdfium2 licensing notes:
+https://github.com/pypdfium2-team/pypdfium2#licensing

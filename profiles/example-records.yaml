@@ -1,0 +1,344 @@
+profile_schema_version: "1.0"
+profile_id: example-records
+profile_version: "0.1.0"
+name: Synthetic archival record example
+record_type: generic_record
+status: synthetic_example
+
+scope:
+  source_family: generic_record_table
+  validated_on:
+    - id: synthetic_fixture
+      label: Synthetic two-page fixture
+  known_exclusions: []
+  claim: >-
+    This profile demonstrates workflow mechanics with invented records only.
+    It is not evidence of accuracy for any real publication, period, place,
+    organization, subject, or table layout.
+
+document:
+  title: Synthetic Archival Record List
+  edition_year: null
+  language: en
+  retain_all_pages: true
+  page_types:
+    - front_matter
+    - table_of_contents
+    - aggregate_summary
+    - detail_table
+    - note
+    - blank
+    - unknown
+  front_matter_policy: retain_as_metadata
+
+page_identity:
+  source_pdf_page_index:
+    required: true
+    base: 0
+    immutable: true
+    description: Index in the complete, unsplit source PDF.
+  printed_page_label:
+    required: false
+    nullable: true
+    immutable: true
+    description: Printed label, which may be absent or offset by front matter.
+  table_id:
+    required: true
+    immutable: true
+    description: Stable identifier for a summary or detail table.
+  renumber_after_filtering: false
+
+parser:
+  kind: record_table
+  version: "1"
+  row_grain: one synthetic archival record
+  source_layout:
+    orientation: portrait
+    mostly_ruled: true
+    repeated_blank_cells: true
+    aggregate_summary_pages_present: false
+    cross_page_continuations_present: false
+  matrix_tables:
+    supported: false
+    required_parser: matrix_observation
+    note: >-
+      Region-by-indicator, period-by-indicator, and multi-level-header matrices
+      require a dedicated parser and a long observation contract.
+
+fields:
+  - name: item_name
+    label: Item name
+    type: string
+    required: true
+    preserve_raw: true
+    standardized_name: item_name_std
+    standardization: controlled_label_with_review
+    semantic_role: label
+  - name: catalog_code
+    label: Catalog code
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: catalog_code_std
+    standardization: conservative_text
+  - name: category
+    label: Category
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: category_std
+    standardization: controlled_label_with_review
+  - name: location
+    label: Location
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: location_std
+    standardization: conservative_text
+  - name: organization
+    label: Organization
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: organization_std
+    standardization: entity_resolution_optional
+  - name: recorded_date
+    label: Recorded date
+    type: date_expression
+    required: false
+    preserve_raw: true
+    standardized_name: recorded_date_std
+    standardization: structured_date_precision
+    semantic_role: date
+  - name: quantity
+    label: Quantity
+    type: numeric_expression
+    required: false
+    preserve_raw: true
+    standardized_name: quantity_std
+    standardization: preserve_group_and_range_semantics
+    semantic_role: quantity
+  - name: quantity_unit
+    label: Quantity unit
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: quantity_unit_std
+    standardization: controlled_unit_with_review
+    semantic_role: quantity_unit
+  - name: description
+    label: Description
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: description_std
+    standardization: conservative_text
+  - name: amount_text
+    label: Amount
+    type: amount_expression
+    required: false
+    preserve_raw: true
+    standardized_name: amount_observation_ids
+    standardization: explode_to_amount_long
+    semantic_role: amount
+  - name: amount_unit_text
+    label: Amount unit
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: amount_unit_std
+    standardization: parse_currency_scale_and_denominator
+    semantic_role: amount_unit
+  - name: note
+    label: Note
+    type: string
+    required: false
+    preserve_raw: true
+    standardized_name: note_std
+    standardization: conservative_text
+
+ocr:
+  minimum_independent_engines: 2
+  engines:
+    - id: ocr-alpha
+      version: pin-at-run-time
+      independent: true
+    - id: ocr-beta
+      version: pin-at-run-time
+      independent: true
+  row_jsonl_contract:
+    required_keys:
+      - document_id
+      - page_id
+      - source_pdf_page_index
+      - printed_page_label
+      - table_id
+      - engine_id
+      - engine_version
+      - source_row_index
+      - cells
+    optional_keys:
+      - bbox
+      - prompt_hash
+      - run_id
+  retain_engine_outputs: true
+  do_not_insert_default_units: true
+
+alignment:
+  anchor_engine: ocr-alpha
+  anchor_fields:
+    - item_name
+    - catalog_code
+    - category
+    - organization
+    - recorded_date
+    - quantity
+  weights:
+    item_name: 0.30
+    catalog_code: 0.25
+    category: 0.15
+    organization: 0.10
+    recorded_date: 0.10
+    quantity: 0.10
+  preserve_unmatched_rows: true
+  allow_cross_page_alignment: false
+
+consensus:
+  expected_sources: 2
+  auto_accept:
+    normalized_unanimous_only: true
+    allow_single_source: false
+    allow_repeat_marker_resolution: false
+  statuses:
+    - unanimous
+    - majority
+    - conflict
+    - missing
+  preserve_candidates: true
+
+comparison_normalization:
+  default:
+    transforms:
+      - nfkc
+      - strip
+      - collapse_whitespace
+  fields:
+    catalog_code:
+      transforms:
+        - nfkc
+        - strip
+        - collapse_whitespace
+        - uppercase_latin
+  field_aliases: {}
+
+repeat_markers:
+  enabled: true
+  values:
+    - SAME-AS-ABOVE
+    - DITTO
+  scope: same_field_previous_record_same_table
+  cross_page: decision_required
+  preserve_raw_marker: true
+
+normalization:
+  raw_and_standardized_fields: true
+  dates:
+    retain_raw: true
+    allowed_precisions:
+      - year
+      - month
+      - range_year
+      - range_month
+      - unresolved
+    output_fields:
+      - date_raw
+      - date_start
+      - date_end
+      - date_precision
+  amounts:
+    layout: long
+    retain_raw: true
+    no_unsourced_exchange_rate_conversion: true
+    currency_aliases:
+      USD:
+        - USD
+      EUR:
+        - EUR
+      CRD:
+        - CRD
+      TOK:
+        - TOK
+    scale_factors:
+      thousand: 1000
+      million: 1000000
+    group_total_markers:
+      - total
+      - combined
+    per_unit_markers:
+      - /item
+      - per item
+    conversion_markers:
+      - reported equivalent
+      - equivalent
+    item_labels:
+      - item
+      - record
+    denominator_label: items
+    output_fields:
+      - price_id
+      - record_id
+      - value_raw
+      - value_numeric
+      - currency_code
+      - scale_factor
+      - basis
+      - denominator_unit
+      - conversion_role
+      - source_reported
+      - unresolved_reason
+      - source_cell_ids
+
+outputs:
+  records: records.jsonl
+  prices: prices.jsonl
+  decisions: decisions.jsonl
+  quality_summary: quality-summary.json
+  spreadsheet_view_optional: true
+
+quality:
+  require_complete_page_identity: true
+  require_raw_for_standardized_values: true
+  require_decision_for_conflict: true
+  require_decision_for_single_source_row: true
+  require_referential_integrity: true
+  never_delete_disagreements: true
+  do_not_treat_internal_copy_consistency_as_source_accuracy: true
+  report_metrics:
+    - rows_by_engine
+    - aligned_records
+    - unanimous_records
+    - conflict_cells
+    - missing_source_rows
+    - repeat_marker_cells
+    - manual_decisions
+    - provenance_completeness
+
+provenance:
+  immutable_stage_outputs: true
+  required_record_fields:
+    - record_id
+    - document_id
+    - page_id
+    - source_pdf_page_index
+    - printed_page_label
+    - table_id
+    - source_row_index
+  preserve:
+    - engine_id
+    - engine_version
+    - raw_value
+    - normalized_candidate
+    - bbox
+    - prompt_hash
+    - run_id
+    - decision_id

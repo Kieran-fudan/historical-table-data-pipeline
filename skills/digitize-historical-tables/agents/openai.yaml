@@ -1,0 +1,4 @@
+interface:
+  display_name: "Digitize Historical Tables"
+  short_description: "Reconcile OCR into auditable research data"
+  default_prompt: "Use $digitize-historical-tables to turn independent OCR transcriptions into reviewed, traceable research data."

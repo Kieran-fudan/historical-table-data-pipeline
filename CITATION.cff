@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, cite the repository and the exact release or commit used."
+title: "Historical Table Data Pipeline"
+type: software
+version: 0.1.0
+date-released: 2026-08-16
+authors:
+  - name: "Kieran-fudan"
+abstract: >-
+  A profile-driven, auditable pipeline for reconciling independent OCR
+  transcriptions of scanned historical tables into reviewed research
+  data while preserving provenance and unresolved uncertainty.
+license: Apache-2.0
+repository-code: "https://github.com/Kieran-fudan/historical-table-data-pipeline"
+url: "https://github.com/Kieran-fudan/historical-table-data-pipeline"
+keywords:
+  - historical tables
+  - OCR reconciliation
+  - synthetic examples
+  - research data
+  - provenance

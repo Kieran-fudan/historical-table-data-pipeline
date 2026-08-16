@@ -1,0 +1,58 @@
+# Credentials and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+**/settings.local.json
+.claude/settings*.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+.venv-*/
+.test-venv/
+venv/
+dist/
+build/
+
+# Pipeline outputs and private source material
+runs/
+output/
+outputs/
+data/
+raw/
+private/
+tmp/
+*.pdf
+*.docx
+*.xlsx
+*.xls
+*.zip
+*.7z
+*.mp4
+*.png
+*.jpg
+*.jpeg
+*.tif
+*.tiff
+*.parquet
+*.duckdb
+
+# Explicitly allow small, reviewed synthetic fixtures
+!examples/synthetic/**
+!docs/**/*.png
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,57 @@
+fixture_schema_version: "1.0"
+fixture_id: synthetic-generic-records-mini
+synthetic: true
+license: CC0-1.0
+profile: profiles/example-records.yaml
+description: >-
+  A fully invented two-page fixture for exercising independent OCR
+  reconciliation, immutable page identity, raw and standardized fields,
+  decisions, date precision, and long-form amounts. It contains no source PDF,
+  copied transcription, real organization, real record, or personal path.
+
+engines:
+  - engine_id: ocr-alpha
+    engine_version: fixture-alpha-1.0
+    path: ocr/engine-a.jsonl
+  - engine_id: ocr-beta
+    engine_version: fixture-beta-1.0
+    path: ocr/engine-b.jsonl
+
+pages:
+  - page_id: synthetic-page-a
+    source_pdf_page_index: 0
+    printed_page_label: A
+    table_id: synthetic-table-a
+  - page_id: synthetic-page-b
+    source_pdf_page_index: 1
+    printed_page_label: B
+    table_id: synthetic-table-b
+
+scenarios:
+  - id: common_correct
+    locator: synthetic-page-a/0
+    expectation: Both engines transcribe the row identically.
+  - id: repeat_marker
+    locator: synthetic-page-a/1
+    expectation: SAME-AS-ABOVE and DITTO remain raw until an explicit decision resolves them.
+  - id: spelling_conflict
+    locator: synthetic-page-a/2/item_name
+    expectation: Cedar Ledger versus Ceder Ledger remains a conflict until reviewed.
+  - id: missing_row
+    locator: synthetic-page-b/0
+    expectation: The row appears only in ocr-alpha and requires a decision.
+  - id: second_common_correct
+    locator: synthetic-page-b/1
+    expectation: Both engines agree on a date-range record.
+  - id: multiple_currencies
+    locator: expected/prices.jsonl
+    expectation: Common and fictional currency codes remain separate long-form observations.
+  - id: date_precision
+    locator: expected/records.jsonl
+    expectation: Year, month, and year-range expressions are represented structurally.
+
+decisions: decisions/reconciliation.jsonl
+expected:
+  records: expected/records.jsonl
+  prices: expected/prices.jsonl
+  quality_summary: expected/quality-summary.json
